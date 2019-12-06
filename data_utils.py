@@ -61,21 +61,21 @@ def train_test_split():
     """
     # Get the data.
     print("==========[INFO] DOWNLOADING DATA TRAIN==========")
-    train_data_filename = maybe_download('train-images-idx3-ubyte.gz')
+    train_data_filename = pull_dataset('train-images-idx3-ubyte.gz')
     print("==========[INFO] DOWNLOADING LABELS TRAIN==========")
-    train_labels_filename = maybe_download('train-labels-idx1-ubyte.gz')
+    train_labels_filename = pull_dataset('train-labels-idx1-ubyte.gz')
     print("==========[INFO] DOWNLOADING DATA TEST==========")
-    test_data_filename = maybe_download('t10k-images-idx3-ubyte.gz')
+    test_data_filename = pull_dataset('t10k-images-idx3-ubyte.gz')
     print("==========[INFO] DOWNLOADING LABELS TEST==========")
-    test_labels_filename = maybe_download('t10k-labels-idx1-ubyte.gz')
+    test_labels_filename = pull_dataset('t10k-labels-idx1-ubyte.gz')
     print("==========[INFO] DATA DOWNLOADED==========")
 
     # Extract it into numpy arrays.
     print("==========[INFO] EXTRACTING DATA DOWNLOADED==========")
     train_data = extract_data(train_data_filename, params.DATA_TRAIN)
-    train_labels = extract_labels(train_labels_filename, params.DATA_TRAIN)
+    train_labels = extract_label(train_labels_filename, params.DATA_TRAIN)
     test_data = extract_data(test_data_filename, params.DATA_TEST)
-    test_labels = extract_labels(test_labels_filename, params.DATA_TEST)
+    test_labels = extract_label(test_labels_filename, params.DATA_TEST)
     print("==========[INFO] DATA EXTRACTED==========")
 
     # split dataset
