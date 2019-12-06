@@ -1,4 +1,4 @@
-import tensorflow
+import tensorflow as tf
 import numpy as np
 import params
 import model_utils
