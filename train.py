@@ -39,21 +39,21 @@ with graph.as_default():
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
-        with tf.device('/gpu:0'):
-            global_step = tf.global_variables_initializer()
-            for epoch in range(1, params.EPOCHS + 1):
-                print("[INFO] Epoch {}/{} - Batch Size {}".format(epoch, params.EPOCHS, params.BATCH_SIZE))
-                iterator = 0
-                while iterator < 32:
-                    tensor_list = [global_step, loss, train_op, accuracy, confusion_accuracy]
-                    feed_dict = {
-                            input: train_data,
-                            label: train_labels
-                    }
-                    _step, _loss, _, acc, confusion_acc = sess.run(tensor_list, feed_dict=feed_dict)
-                    print("STEP: ", _step)
-                    print("LOSS: ", _loss)
-                    print("ACC: ", acc)
-                    print("CONFUSION: ", confusion_acc)
-                    iterator += 1
-                print("=========================================")
+    with tf.device('/gpu:0'):
+        global_step = tf.global_variables_initializer()
+        for epoch in range(1, params.EPOCHS + 1):
+            print("[INFO] Epoch {}/{} - Batch Size {}".format(epoch, params.EPOCHS, params.BATCH_SIZE))
+            iterator = 0
+            while iterator < 32:
+                tensor_list = [global_step, loss, train_op, accuracy, confusion_accuracy]
+                feed_dict = {
+                        input: train_data,
+                        label: train_labels
+                }
+                _step, _loss, _, acc, confusion_acc = sess.run(tensor_list, feed_dict=feed_dict)
+                print("STEP: ", _step)
+                print("LOSS: ", _loss)
+                print("ACC: ", acc)
+                print("CONFUSION: ", confusion_acc)
+                iterator += 1
+            print("=========================================")
