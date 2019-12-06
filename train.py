@@ -32,7 +32,7 @@ with graph.as_default():
         confusion_accuracy = model_utils.confusion_accuracy(confusion_matrix)
         # compile model
         optimizer = tf.train.AdamOptimizer(learning_rate=params.LR, name='Adam_optimizer')
-        train_op = optimizer.minimizer(loss, name='train_op')
+        train_op = optimizer.minimize(loss, name='train_op')
 
 with graph.as_default():
     with tf.device('/gpu:0'):
