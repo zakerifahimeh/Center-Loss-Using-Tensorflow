@@ -19,3 +19,4 @@ RATIO = 0.1
 # params training
 BATCH_SIZE = 32
 EPOCHS = 10
+LOG_DIR = './log'
