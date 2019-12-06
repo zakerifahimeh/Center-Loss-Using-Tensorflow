@@ -25,7 +25,10 @@ with graph.as_default():
         correct_predict = tf.equal(tf.argmax(output, 1), tf.argmax(label, 1))
         accuracy = tf.reduce_mean(tf.cast(correct_predict, tf.float32))
         # get accuracy confusion matrix
-        confusion_matrix = tf.math.confusion_matrix(labels=label, predictions=output, dtype=tf.dtypes.int32, name='confusion_matrix')
+        confusion_matrix = tf.math.confusion_matrix(labels=tf.argmax(label, 1),
+                                                    predictions=tf.argmax(output, 1),
+                                                    num_classes=10,
+                                                    dtype=tf.dtypes.int32, name='confusion_matrix')
         confusion_accuracy = model_utils.confusion_accuracy(confusion_matrix)
         # compile model
         optimizer = tf.train.AdamOptimizer(learning_rate=params.LR, name='Adam_optimizer')
