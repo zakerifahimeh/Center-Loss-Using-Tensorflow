@@ -14,7 +14,7 @@ def pull_dataset(filename):
         os.mkdir(params.DATA_DIR)
     file_path = os.path.join(params.DATA_DIR, filename)
     if not os.path.exists(file_path):
-        file_path, _ = dowload(params.SOURCE_URL + filename, file_path)
+        file_path, _ = download(params.SOURCE_URL + filename, file_path)
         with tf.gfile.GFile(file_path) as f:
             size = f.size()
         print("Successfully dowloaded dataset: {} - {}".format(filename, size))
