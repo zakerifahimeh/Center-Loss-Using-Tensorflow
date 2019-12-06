@@ -32,7 +32,7 @@ class CNN:
                                 activation='relu',
                                 padding='same',
                                 name='conv1')
-        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], name='pool1')
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=[1, 1], name='pool1')
         net = tf.layers.conv2d(inputs=net,
                                 filters=64,
                                 kernel_size=[5, 5],
@@ -40,7 +40,7 @@ class CNN:
                                 activation='relu',
                                 padding='valid',
                                 name='conv2')
-        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], name='pool2')
+        net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=[1, 1], name='pool2')
         # flatten
         net = tf.reshape(net, [net.get_shape()[0], -1], name='flatten')
         net = tf.layers.dense(inputs=net, units=self.embedding_size, activation='relu', name='fully_1')
