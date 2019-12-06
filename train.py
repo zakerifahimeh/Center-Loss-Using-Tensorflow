@@ -39,16 +39,18 @@ with graph.as_default():
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
+    loader_data, num_images = data_utils.data_loader(train_data, train_labels)
     with tf.device('/gpu:0'):
         global_step = tf.global_variables_initializer()
         for epoch in range(1, params.EPOCHS + 1):
-            print("[INFO] Epoch {}/{} - Batch Size {}".format(epoch, params.EPOCHS, params.BATCH_SIZE))
+            print("[INFO] Epoch {}/{} - Batch Size {} - {} images".format(epoch, params.EPOCHS, params.BATCH_SIZE, num_images))
             iterator = 0
             while iterator < 32:
+                image_batch, label_batch = next(iter(loader_data))
                 tensor_list = [global_step, loss, train_op, accuracy, confusion_accuracy]
                 feed_dict = {
-                        input: train_data,
-                        label: train_labels
+                        input: image_batch,
+                        label: label_batch
                 }
                 _step, _loss, _, acc, confusion_acc = sess.run(tensor_list, feed_dict=feed_dict)
                 print("STEP: ", _step)

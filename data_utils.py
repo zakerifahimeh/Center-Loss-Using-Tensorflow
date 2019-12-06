@@ -87,3 +87,32 @@ def train_test_split():
     train_labels = train_labels[val_size:, :]
 
     return train_data, train_labels, validation_data, validation_labels
+
+
+def data_loader(images, labels):
+    """
+        Setup data loader
+    """
+    num_image = images.shape[0]
+    # setup image
+    image_ds = tf.data.Dataset.from_tensor_slices(images)
+    print('shape: ', repr(image_ds.output_shapes))
+    print('type: ', image_ds.output_types)
+    print()
+    # setup label
+    label_ds = tf.data.Dataset.from_tensor_slices(labels)
+    print('shape: ', repr(label_ds.output_shapes))
+    print('type: ', label_ds.output_types)
+    print()
+    #
+    image_label_ds = tf.data.Dataset.zip((image_ds, label_ds))
+    # Setting a shuffle buffer size as large as the dataset ensures that the data is
+    # completely shuffled.
+    train_ds = image_label_ds.cache(filename='./cache.tf-data-train')
+    train_ds = train_ds.shuffle(buffer_size=len(num_image))
+    train_ds = train_ds.repeat()
+    train_ds = train_ds.batch(params.BATCH_SIZE)
+    # `prefetch` lets the dataset fetch batches, in the background while the model is training.
+    train_ds = train_ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+
+    return train_ds, num_image
