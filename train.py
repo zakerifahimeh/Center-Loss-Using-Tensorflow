@@ -12,7 +12,7 @@ with graph.as_default():
         train_data, train_labels, validation_data, validation_labels = data_utils.train_test_split()
         # define placeholder
         input = tf.placeholder(shape=[params.BATCH_SIZE, params.INPUT_SIZE, params.INPUT_SIZE, 1], dtype=tf.float32)
-        label = tf.placeholder(shape=[params.BATCH_SIZE, params.CLASSES], dtype=tf.int32])
+        label = tf.placeholder(shape=[params.BATCH_SIZE, params.CLASSES], dtype=tf.int32)
         # get output
         model = architect.CNN()
         output = model.inference()
