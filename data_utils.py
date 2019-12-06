@@ -34,7 +34,7 @@ def extract_data(file, num_image):
         # normalize data from [0, 255] to [-1, 1]
         data = 2 * (data / 255.0) - 1
         data = data.reshape(num_image, params.INPUT_SIZE, params.INPUT_SIZE, params.NUM_CHANNELS)
-        data = np.reshape(data, [num_image, -1])
+        # data = np.reshape(data, [num_image, -1])
 
     return data
 
