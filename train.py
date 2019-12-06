@@ -3,6 +3,7 @@ import os
 import params
 import data_utils
 import architect
+import model_utils
 
 
 graph = tf.Graph()
