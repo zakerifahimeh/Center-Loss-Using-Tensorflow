@@ -40,13 +40,13 @@ with graph.as_default():
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
     loader_data, num_images = data_utils.data_loader(train_data, train_labels)
+    image_batch, label_batch = loader_data.get_next()
     with tf.device('/gpu:0'):
         global_step = tf.global_variables_initializer()
         for epoch in range(1, params.EPOCHS + 1):
             print("[INFO] Epoch {}/{} - Batch Size {} - {} images".format(epoch, params.EPOCHS, params.BATCH_SIZE, num_images))
             iterator = 0
             while iterator < 32:
-                image_batch, label_batch = next(iter(loader_data))
                 tensor_list = [global_step, loss, train_op, accuracy, confusion_accuracy]
                 feed_dict = {
                         input: image_batch,
