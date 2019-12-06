@@ -8,19 +8,24 @@ class CNN:
     """
         Set up CNN model
     """
-    def __init__(self, input, trainable=True, dropout=0.5, node_fuly = params.NODE):
+    def __init__(self, input,
+                    trainable=True,
+                    dropout=0.5,
+                    node_fuly = params.NODE,
+                    embedding_size=1024):
         self.input = input
         self.trainable = trainable
         self.dropout = dropout
         self.node_fuly = node_fuly
+        self.embedding_size=1024
 
 
     def inference(self):
         """
             CNN model
         """
-        # _input = tf.reshape(self.input, [params.BATCH_SIZE, params.INPUT_SIZE, params.INPUT_SIZE, 1])
-        net = tf.layers.conv2d(inputs=input,
+        _input = tf.reshape(self.input, [params.BATCH_SIZE, params.INPUT_SIZE, params.INPUT_SIZE, 1])
+        net = tf.layers.conv2d(inputs=_input,
                                 filters=32,
                                 kernel_size=[5, 5],
                                 strides=[1, 1],
