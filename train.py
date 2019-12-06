@@ -14,7 +14,7 @@ with graph.as_default():
         input = tf.placeholder(shape=[params.BATCH_SIZE, params.INPUT_SIZE, params.INPUT_SIZE, 1], dtype=tf.float32)
         label = tf.placeholder(shape=[params.BATCH_SIZE, params.CLASSES], dtype=tf.int32)
         # get output
-        model = architect.CNN()
+        model = architect.CNN(input=input)
         output = model.inference()
         # get center loss
         loss = model_utils.center_loss(embedding=output, labels=label, num_classes=params.CLASSES)

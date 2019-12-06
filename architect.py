@@ -8,7 +8,8 @@ class CNN:
     """
         Set up CNN model
     """
-    def __init__(self, trainable=True, dropout=0.5, node_fuly = params.NODE):
+    def __init__(self, input, trainable=True, dropout=0.5, node_fuly = params.NODE):
+        self.input = input
         self.trainable = trainable
         self.dropout = dropout
         self.node_fuly = node_fuly
