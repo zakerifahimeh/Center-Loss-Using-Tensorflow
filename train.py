@@ -18,7 +18,8 @@ with graph.as_default():
         model = architect.CNN(input=input)
         output = model.inference()
         # get center loss
-        loss = model_utils.center_loss(embedding=output, labels=label, num_classes=params.CLASSES)
+        # loss = model_utils.center_loss(embedding=output, labels=label, num_classes=params.CLASSES)
+        loss = tf.losses.softmax_cross_entropy(onehot_labels=label, logits=output, scope='softmax_loss')
         # get accuracy
         # accuracy = tf.metrics.accuracy(labels=label, predictions=output, name='metric_acc')
         correct_predict = tf.equal(tf.argmax(output, 1), tf.argmax(label, 1))
