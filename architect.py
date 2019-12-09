@@ -9,7 +9,7 @@ class CNN:
         Set up CNN model
     """
     def __init__(self, input,
-                    label
+                    label,
                     trainable=True,
                     dropout=0.5,
                     node_fuly = params.NODE,
