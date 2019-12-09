@@ -10,7 +10,7 @@ graph = tf.Graph()
 
 with graph.as_default():
     # config session
-    config = tf.ConfigProto()
+    config = tf.ConfigProto(allow_soft_placement=True)
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
     with tf.device("/device:GPU:0"):
