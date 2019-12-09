@@ -39,7 +39,7 @@ class CNN:
         self.confusion_accuracy = model_utils.confusion_accuracy(confusion_matrix)
         # compile model
         self.optimizer = tf.train.AdamOptimizer(learning_rate=params.LR, name='Adam_optimizer')
-        self.train_op = optimizer.minimize(self.loss, name='train_op')
+        self.train_op = self.optimizer.minimize(self.loss, name='train_op')
 
     def model(self, __input):
         """
