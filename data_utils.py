@@ -89,11 +89,10 @@ def train_test_split():
     return train_data, train_labels, validation_data, validation_labels
 
 
-def data_loader(images, labels):
+def data_loader(images, labels, num_image):
     """
         Setup data loader
     """
-    num_image = images.shape[0]
     # setup image
     image_ds = tf.data.Dataset.from_tensor_slices(images)
     print('shape: ', repr(image_ds.output_shapes))
@@ -116,4 +115,4 @@ def data_loader(images, labels):
     train_ds = train_ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
     iterator = train_ds.make_initializable_iterator()
 
-    return iterator, num_image
+    return iterator
