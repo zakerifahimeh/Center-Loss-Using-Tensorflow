@@ -12,8 +12,8 @@ with graph.as_default():
     with tf.device('/gpu:0'):
         train_data, train_labels, validation_data, validation_labels = data_utils.train_test_split()
         # setup placeholder
-        input = tf.placeholder(tf.float32, [params.BATCH_SIZE, params.INPUT_SIZE, params.INPUT_SIZE, params.NUM_CHANNELS])
-        label = tf.placeholder(tf.int32, [params.BATCH_SIZE, params.CLASSES])
+        input = tf.placeholder(tf.float32, [None, params.INPUT_SIZE, params.INPUT_SIZE, params.NUM_CHANNELS])
+        label = tf.placeholder(tf.int32, [None, params.CLASSES])
         #
         loader_data, num_images = data_utils.data_loader(train_data, train_labels)
         batch_image, batch_label = loader_data.get_next()

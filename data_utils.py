@@ -113,7 +113,7 @@ def data_loader(images, labels):
     train_ds = train_ds.repeat()
     train_ds = train_ds.batch(params.BATCH_SIZE)
     # `prefetch` lets the dataset fetch batches, in the background while the model is training.
-    # train_ds = train_ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+    train_ds = train_ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
     iterator = train_ds.make_initializable_iterator()
 
     return iterator, num_image
