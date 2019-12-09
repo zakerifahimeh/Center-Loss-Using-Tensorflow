@@ -13,7 +13,7 @@ with graph.as_default():
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
-    with tf.device('/gpu:0'):
+    with tf.device("/device:GPU:0"):
         train_data, train_labels, validation_data, validation_labels = data_utils.train_test_split()
         # setup placeholder
         input = tf.placeholder(tf.float32, [None, params.INPUT_SIZE, params.INPUT_SIZE, params.NUM_CHANNELS])
@@ -25,7 +25,7 @@ with graph.as_default():
 with graph.as_default():
 
     # image_batch, label_batch = loader_data.get_next()
-    with tf.device('/gpu:0'):
+    with tf.device("/device:GPU:0"):
         global_step = tf.global_variables_initializer()
         for epoch in range(1, params.EPOCHS + 1):
             print("[INFO] Epoch {}/{} - Batch Size {} - {} images".format(epoch, params.EPOCHS, params.BATCH_SIZE, num_images))
