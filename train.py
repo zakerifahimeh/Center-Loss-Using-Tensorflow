@@ -7,6 +7,10 @@ import model_utils
 
 
 graph = tf.Graph()
+# config session
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+sess = tf.Session(config=config)
 
 with graph.as_default():
     with tf.device('/gpu:0'):
@@ -20,9 +24,6 @@ with graph.as_default():
         model = architect.CNN(input=batch_image, label=batch_label)
 with graph.as_default():
 
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
-    sess = tf.Session(config=config)
     # image_batch, label_batch = loader_data.get_next()
     with tf.device('/gpu:0'):
         global_step = tf.global_variables_initializer()
