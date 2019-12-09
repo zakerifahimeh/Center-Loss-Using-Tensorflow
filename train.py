@@ -7,12 +7,12 @@ import model_utils
 
 
 graph = tf.Graph()
-# config session
-config = tf.ConfigProto()
-config.gpu_options.allow_growth = True
-sess = tf.Session(config=config)
 
 with graph.as_default():
+    # config session
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    sess = tf.Session(config=config)
     with tf.device('/gpu:0'):
         train_data, train_labels, validation_data, validation_labels = data_utils.train_test_split()
         # setup placeholder
