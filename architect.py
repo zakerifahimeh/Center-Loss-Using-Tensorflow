@@ -50,7 +50,7 @@ class CNN:
                                 filters=32,
                                 kernel_size=[5, 5],
                                 strides=[1, 1],
-                                activation='relu',
+                                activation=tf.nn.relu,
                                 padding='same',
                                 name='conv1')
         net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=[1, 1], name='pool1')
@@ -58,7 +58,7 @@ class CNN:
                                 filters=64,
                                 kernel_size=[5, 5],
                                 strides=[1, 1],
-                                activation='relu',
+                                activation=tf.nn.relu,
                                 padding='valid',
                                 name='conv2')
         net = tf.layers.max_pooling2d(inputs=net, pool_size=[2, 2], strides=[1, 1], name='pool2')
@@ -66,6 +66,6 @@ class CNN:
         net = tf.reshape(net, [net.get_shape()[0], -1], name='flatten')
         net = tf.layers.dense(inputs=net, units=self.embedding_size, activation='relu', name='fully_1')
         net = tf.layers.dropout(net, rate=self.dropout, training=self.trainable, name='dropout')
-        output = tf.layers.dense(inputs=net, units=params.CLASSES, activation='softmax', name='embeddings')
+        output = tf.layers.dense(inputs=net, units=params.CLASSES, activation=tf.nn.softmax, name='embeddings')
 
         return output
