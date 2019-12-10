@@ -83,10 +83,11 @@ with graph.as_default():
             val_acc = 0
             val_confusion = 0
             while val_step < iter + 1:
-                _val_loss, _val_acc, _val_confusion_acc = sess.run(model.loss, model.accuracy, model.confusion_accuracy)
+                val_tensor_list = [model.loss, model.accuracy, model.confusion_accuracy]
+                _val_loss, _val_acc, _val_confusion_acc = sess.run(val_tensor_list)
                 val_loss += _val_loss
                 val_acc += _val_acc
                 val_confusion += _val_confusion_acc
                 val_step += 1
-            print("[INFO VALIDATION] Total step {} - val_loss: {} - val_acc: {} - val_confusion_acc: {}".format(val_step,
-                                                                                    val_loss, val_acc, val_confusion_acc))
+            print("[INFO VALIDATION] Total step {} - val_loss: {} - val_acc: {} - val_confusion_acc: {}".format(val_step/iter,
+                                                                                    val_loss/iter, val_acc/iter, val_confusion_acc/iter))
