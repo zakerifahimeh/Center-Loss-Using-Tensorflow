@@ -6,6 +6,7 @@ def center_loss(embedding, labels, num_classes, name=''):
     '''
     embedding dim : (batch_size, num_features)
     '''
+    label = tf.argmax(labels, 1)
     with tf.variable_scope(name):
 
         num_features = embedding.get_shape()[1]
@@ -15,13 +16,13 @@ def center_loss(embedding, labels, num_classes, name=''):
                             initializer=tf.zeros_initializer(),trainable=False)
 
 
-        centroids_batch = tf.gather(centroids,labels)
+        centroids_batch = tf.gather(centroids,label)
 
         loss = tf.nn.l2_loss(embedding - centroids_batch) / float(params.BATCH_SIZE) # Eq. 2
 
         diff = centroids_batch - embedding
 
-        delta_c_nominator = tf.scatter_add(centroids_delta, labels, diff)
+        delta_c_nominator = tf.scatter_add(centroids_delta, label, diff)
 
         indices = tf.expand_dims(labels,-1)
         updates = tf.constant(value=1,shape=[indices.get_shape()[0]],dtype=tf.float32)
