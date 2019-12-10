@@ -15,7 +15,7 @@ class CNN:
         # get output
         output = self.model(input)
         # get center loss
-        # loss = model_utils.center_loss(embedding=output, labels=label, num_classes=params.CLASSES)
+        # self.loss = model_utils.center_loss(embedding=output, labels=label, num_classes=params.CLASSES)
         self.loss = tf.losses.softmax_cross_entropy(onehot_labels=label, logits=output, scope='softmax_loss')
         # get accuracy
         # accuracy = tf.metrics.accuracy(labels=label, predictions=output, name='metric_acc')
