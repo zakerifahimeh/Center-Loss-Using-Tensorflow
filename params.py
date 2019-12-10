@@ -21,4 +21,4 @@ RATIO = 0.1
 BATCH_SIZE = 64
 EPOCHS = 15
 LOG_DIR = './log'
-SAVER_DIR = './model_save/graph.pb'
+SAVER_DIR = './model_save'

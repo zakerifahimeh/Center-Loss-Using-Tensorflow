@@ -9,8 +9,8 @@ from tensorflow.python.platform import gfile
 
 if not os.path.exists(params.LOG_DIR):
     os.mkdir(params.LOG_DIR)
-if not os.path.exists('model_save'):
-    os.mkdir('model_save')
+if not os.path.exists(params.SAVER_DIR):
+    os.mkdir(params.SAVER_DIR)
 
 graph = tf.Graph()
 
@@ -102,8 +102,5 @@ with graph.as_default():
                                                     val_step, val_loss / iter, val_acc / iter, val_confusion / iter))
 
     # save protobuf graph
-    with gfile.FastGFile(params.SAVER_DIR, 'rb') as f:
-        graph_def = tf.GraphDef()
-        graph_def.ParseFromString(f.read())
-        g_in = tf.import_graph_def(graph_def)
-        print("[INFO] Saved Graph")
+    tf.train.write_graph(graph, params.SAVER_DIR, 'graph.pb', as_text=False)
+    print("[INFO] Saved Graph")
