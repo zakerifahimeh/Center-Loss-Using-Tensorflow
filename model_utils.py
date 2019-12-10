@@ -2,48 +2,58 @@ import tensorflow as tf
 import params
 
 
-def center_loss(embedding, labels, num_classes, name=''):
+def center_loss_logits(features, labels, num_classes):
     """
     embedding dim : (batch_size, num_features)
     """
-    label = tf.argmax(labels, 1)
-    with tf.variable_scope(name):
+    print("======feature: ", features)
+    print("======LABEL: ", labels)
+    len_features = features.get_shape()[1]
+    print("======OUTPUT len feature: ", len_features)
+    centers = tf.get_variable('centers', [num_classes, len_features], dtype=tf.float32,
+                              initializer=tf.constant_initializer(0), trainable=False)
+    print("======OUTPUT CENTER: ", centers)
+    labels = tf.reshape(labels, [-1])
+    print("======OUTPUT LABEL: ", labels)
 
-        num_features = embedding.get_shape()[1]
-        centroids = tf.get_variable('c', shape=[num_classes, num_features],
-                                    dtype=tf.float32,
-                                    initializer=tf.contrib.layers.xavier_initializer(),
-                                    trainable=False)
-        centroids_delta = tf.get_variable('centroidsUpdateTempVariable',
-                                          shape=[num_classes,num_features],
-                                          dtype=tf.float32,
-                                          initializer=tf.zeros_initializer(),
-                                          trainable=False)
+    centers_batch = tf.gather(centers, labels)
+    print("======OUTPUT CENTER BATCH: ", centers_batch)
+    loss = tf.nn.l2_loss(features - centers_batch)
+    print("======OUTPUT LOSS: ", loss)
 
-        centroids_batch = tf.gather(centroids,label)
+    diff = centers_batch - features
+    print("======OUTPUT CONV 1: ", net)
 
-        loss = tf.nn.l2_loss(embedding - centroids_batch) / float(params.BATCH_SIZE)
+    unique_label, unique_idx, unique_count = tf.unique_with_counts(labels)
+    print("======OUTPUT CONV 1: ", net)
+    appear_times = tf.gather(unique_count, unique_idx)
+    print("======OUTPUT CONV 1: ", net)
+    appear_times = tf.reshape(appear_times, [-1, 1])
+    print("======OUTPUT CONV 1: ", net)
 
-        diff = centroids_batch - embedding
+    diff = diff / tf.cast((1 + appear_times), tf.float32)
+    diff = alpha * diff
 
-        delta_c_nominator = tf.scatter_add(centroids_delta, label, diff)
+    centers_update_op = tf.scatter_sub(centers, labels, diff)
 
-        indices = tf.expand_dims(labels, -1)
-        updates = tf.constant(value=1, shape=[indices.get_shape()[0]], dtype=tf.float32)
-        shape = tf.constant([num_classes])
-        labels_sum = tf.expand_dims(tf.scatter_nd(indices, updates, shape), -1)
+    return loss, centers, centers_update_op
 
-        centroids = centroids.assign_sub(params.ALPHA * delta_c_nominator / (1.0 + labels_sum))
 
-        centroids_delta = centroids_delta.assign(tf.zeros([num_classes, num_features]))
+def center_loss_one_hot(embeddings, labels, num_classes):
+    """
 
-        '''
-        # The same as with scatter_nd
-        one_hot_labels = tf.one_hot(y,num_classes)
-        labels_sum = tf.expand_dims(tf.reduce_sum(one_hot_labels,reduction_indices=[0]),-1)
-        centroids = centroids.assign_sub(ALPHA * delta_c_nominator / (1.0 + labels_sum))
-        '''
-        return loss, centroids
+    """
+    centers = tf.get_variable(name='centers', shape=[num_classes, params.EMBEDDING_SIZE],
+                              initializer=tf.random_normal_initializer(stddev=0.1), trainable=False)
+    label_indices = tf.argmax(labels, 1)
+    centers_batch = tf.nn.embedding_lookup(centers, label_indices)
+    center_loss = params.LAMBDA * tf.nn.l2_loss(embeddings - centers_batch) / tf.to_float(tf.shape(embeddings)[0])
+    new_centers = centers_batch - embeddings
+    labels_unique, row_indices, counts = tf.unique_with_counts(label_indices)
+
+    centers_update = tf.unsorted_segment_sum(new_centers, row_indices, tf.shape(labels_unique)[0]) / tf.to_float(counts)
+    centers = tf.scatter_sub(centers, labels_unique, params.ALPHA * centers_update)
+    return center_loss, centers
 
 
 def non_nan_average(x):

@@ -1,9 +1,11 @@
 # hyper params
 LR = 0.0001
 ALPHA = 0.5
+LAMBDA = 0.01
 TRAIN_MODE = True
 RATE = 0.5
 NODE = 1024
+EMBEDDING_SIZE = 128
 # params
 INPUT_SIZE = 28
 NUM_CHANNELS = 1

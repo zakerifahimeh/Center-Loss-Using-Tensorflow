@@ -13,10 +13,11 @@ class CNN:
 
     def operation(self, input, label):
         # get output
-        output = self.model(input)
+        output, embedding = self.model(input)
         # get center loss
-        # self.loss = model_utils.center_loss(embedding=output, labels=label, num_classes=params.CLASSES)
-        self.loss = tf.losses.softmax_cross_entropy(onehot_labels=label, logits=output, scope='softmax_loss')
+        self.loss, _ = model_utils.center_loss_one_hot(embedding, label, params.CLASSES)
+        # self.loss, _, _ = model_utils.center_loss_logits(embedding, label, params.CLASSES)
+        # self.loss = tf.losses.softmax_cross_entropy(onehot_labels=label, logits=output, scope='softmax_loss')
         # get accuracy
         # accuracy = tf.metrics.accuracy(labels=label, predictions=output, name='metric_acc')
         correct_predict = tf.equal(tf.argmax(output, 1), tf.argmax(label, 1))
@@ -68,13 +69,19 @@ class CNN:
                               bias_initializer=tf.zeros_initializer(),
                               name='fully_1')
         # print("======OUTPUT FULLY 1: ", net)
-        net = tf.layers.dropout(inputs=net, rate=params.RATE, training=params.TRAIN_MODE, name='dropout')
+        net = tf.layers.dropout(inputs=net, rate=params.RATE, training=params.TRAIN_MODE, name='dropout_1')
         # print("======OUTPUT DROPOUT 1: ", net)
+        embedding = tf.layers.dense(inputs=net,
+                                    units=params.EMBEDDING_SIZE,
+                                    activation=tf.nn.relu,
+                                    bias_initializer=tf.zeros_initializer(),
+                                    name='embeddings')
+        net = tf.layers.dropout(inputs=embedding, rate=params.RATE, training=params.TRAIN_MODE, name='dropout_2')
         output = tf.layers.dense(inputs=net,
                                  units=params.CLASSES,
                                  activation=tf.nn.softmax,
                                  bias_initializer=tf.zeros_initializer(),
-                                 name='embeddings')
+                                 name='output')
         # print("======OUTPUT OUTPUT: ", output)
 
-        return output
+        return output, embedding
