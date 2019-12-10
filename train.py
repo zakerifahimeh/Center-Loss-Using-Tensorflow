@@ -89,5 +89,5 @@ with graph.as_default():
                 val_acc += _val_acc
                 val_confusion += _val_confusion_acc
                 val_step += 1
-            print("[INFO VALIDATION] Total step {} - val_loss: {} - val_acc: {} - val_confusion_acc: {}".format(val_step/iter,
+            print("[INFO VALIDATION] Total step {:.4f} - val_loss: {:.4f} - val_acc: {:.4f} - val_confusion_acc: {:.4f}".format(int(val_step/iter),
                                                                                     val_loss/iter, val_acc/iter, val_confusion/iter))
