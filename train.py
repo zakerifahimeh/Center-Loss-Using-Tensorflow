@@ -103,4 +103,10 @@ with graph.as_default():
 
     # save protobuf graph
     tf.train.write_graph(graph, params.SAVER_DIR, 'graph.pb', as_text=False)
+    # Basically, Save graph same above, which is ok to visualize, but if with model have variables their values will not
+    # be saved there unless freeze the graph first.
+    # reference: https://stackoverflow.com/questions/45466020/how-to-export-keras-h5-to-tensorflow-pb/45466355#45466355
+    # frozen_graph = freeze_session(K.get_session(),
+    #                               output_names=[out.op.name for out in model.outputs])
+    # tf.train.write_graph(frozen_graph, params.SAVER_DIR, "graph.pb", as_text=False)
     print("[INFO] Saved Graph")
