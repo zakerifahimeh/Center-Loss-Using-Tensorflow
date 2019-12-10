@@ -90,4 +90,4 @@ with graph.as_default():
                 val_confusion += _val_confusion_acc
                 val_step += 1
             print("[INFO VALIDATION] Total step {} - val_loss: {} - val_acc: {} - val_confusion_acc: {}".format(val_step/iter,
-                                                                                    val_loss/iter, val_acc/iter, val_confusion_acc/iter))
+                                                                                    val_loss/iter, val_acc/iter, val_confusion/iter))
