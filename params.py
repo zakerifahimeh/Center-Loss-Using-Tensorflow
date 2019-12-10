@@ -19,6 +19,6 @@ RATIO = 0.1
 
 # params training
 BATCH_SIZE = 64
-EPOCHS = 10
+EPOCHS = 15
 LOG_DIR = './log'
 SAVER_DIR = './model_save/graph.pb'

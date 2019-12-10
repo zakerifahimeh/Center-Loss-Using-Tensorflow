@@ -4,6 +4,8 @@ import params
 import data_utils
 import architect
 import model_utils
+from tensorflow.python.platform import gfile
+
 
 if not os.path.exists(params.LOG_DIR):
     os.mkdir(params.LOG_DIR)
