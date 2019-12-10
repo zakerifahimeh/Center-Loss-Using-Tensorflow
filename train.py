@@ -18,33 +18,38 @@ with graph.as_default():
     # making sure Tensorflow doesn't overflow the GPU
     config.gpu_options.per_process_gpu_memory_fraction = 0.9
     sess = tf.InteractiveSession(config=config)
+    # initialize variable
+    sess.run(tf.global_variables_initializer())
+
+    train_data, train_labels, validation_data, validation_labels = data_utils.train_test_split()
+    # setup placeholder
+    input = tf.placeholder(tf.float32, [None, params.INPUT_SIZE, params.INPUT_SIZE, params.NUM_CHANNELS])
+    label = tf.placeholder(tf.int32, [None, params.CLASSES])
+
+    # Whenever you need to record the loss, feed the mean loss to this placeholder
+    tf_loss_ph = tf.placeholder(tf.float32,shape=None,name='loss_summary')
+    tf_accuracy_ph = tf.placeholder(tf.float32,shape=None, name='accuracy_summary')
+    tf_confusion_ph = tf.placeholder(tf.float32,shape=None, name='confusion_summary')
+
+    # Create a scalar summary object for the loss so it can be displayed
+    tf_loss_summary = tf.summary.scalar('loss', tf_loss_ph)
+    tf_accuracy_summary = tf.summary.scalar('accuracy', tf_accuracy_ph)
+    tf_confusion_summary = tf.summary.scalar('confusion acc', tf_confusion_ph)
+
+    # Merge all summaries together
+    performance_summaries = tf.summary.merge([tf_loss_summary, tf_accuracy_summary, tf_confusion_summary])
+    # load iterator and setup model
+    num_images = train_data.shape[0]
+    num_val = validation_data.shape[0]
+    loader_data = data_utils.data_loader(train_data, train_labels, num_images)
+    batch_image, batch_label = loader_data.get_next()
     with tf.device("/device:GPU:0"):
-        train_data, train_labels, validation_data, validation_labels = data_utils.train_test_split()
-        # setup placeholder
-        input = tf.placeholder(tf.float32, [None, params.INPUT_SIZE, params.INPUT_SIZE, params.NUM_CHANNELS])
-        label = tf.placeholder(tf.int32, [None, params.CLASSES])
-        # Whenever you need to record the loss, feed the mean loss to this placeholder
-        tf_loss_ph = tf.placeholder(tf.float32,shape=None,name='loss_summary')
-        tf_accuracy_ph = tf.placeholder(tf.float32,shape=None, name='accuracy_summary')
-        tf_confusion_ph = tf.placeholder(tf.float32,shape=None, name='confusion_summary')
-        # Create a scalar summary object for the loss so it can be displayed
-        tf_loss_summary = tf.summary.scalar('loss', tf_loss_ph)
-        tf_accuracy_summary = tf.summary.scalar('accuracy', tf_accuracy_ph)
-        tf_confusion_summary = tf.summary.scalar('confusion acc', tf_confusion_ph)
-        # Merge all summaries together
-        performance_summaries = tf.summary.merge([tf_loss_summary, tf_accuracy_summary, tf_confusion_summary])
-        #
-        num_images = train_data.shape[0]
-        num_val = validation_data.shape[0]
-        loader_data = data_utils.data_loader(train_data, train_labels, num_images)
-        batch_image, batch_label = loader_data.get_next()
         model = architect.CNN(batch_image, batch_label)
 with graph.as_default():
 
     # write graph
     writer = tf.summary.FileWriter(params.LOG_DIR, sess.graph)
     with tf.device("/device:GPU:0"):
-        sess.run(tf.global_variables_initializer())
         for epoch in range(1, params.EPOCHS + 1):
             print("[INFO] Epoch {}/{} - Batch Size {} - {} images".format(epoch, params.EPOCHS, params.BATCH_SIZE, num_images))
             # set up data iterator for training
