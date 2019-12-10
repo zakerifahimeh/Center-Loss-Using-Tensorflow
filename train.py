@@ -18,8 +18,6 @@ with graph.as_default():
     # making sure Tensorflow doesn't overflow the GPU
     config.gpu_options.per_process_gpu_memory_fraction = 0.9
     sess = tf.InteractiveSession(config=config)
-    # initialize variable
-    sess.run(tf.global_variables_initializer())
 
     train_data, train_labels, validation_data, validation_labels = data_utils.train_test_split()
     # setup placeholder
@@ -43,13 +41,15 @@ with graph.as_default():
     num_val = validation_data.shape[0]
     loader_data = data_utils.data_loader(train_data, train_labels, num_images)
     batch_image, batch_label = loader_data.get_next()
-    with tf.device("/device:GPU:0"):
-        model = architect.CNN(batch_image, batch_label)
+    # with tf.device("/device:GPU:0"):
+    model = architect.CNN(batch_image, batch_label)
 with graph.as_default():
 
     # write graph
     writer = tf.summary.FileWriter(params.LOG_DIR, sess.graph)
     with tf.device("/device:GPU:0"):
+        # initialize variable
+        sess.run(tf.global_variables_initializer())
         for epoch in range(1, params.EPOCHS + 1):
             print("[INFO] Epoch {}/{} - Batch Size {} - {} images".format(epoch, params.EPOCHS, params.BATCH_SIZE, num_images))
             # set up data iterator for training
