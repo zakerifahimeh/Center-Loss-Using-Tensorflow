@@ -7,8 +7,8 @@ import model_utils
 
 if not os.path.exists(params.LOG_DIR):
     os.mkdir(params.LOG_DIR)
-if not os.path.exists(params.SAVER_DIR):
-    os.mkdir(params.SAVER_DIR)
+if not os.path.exists('model_save'):
+    os.mkdir('model_save')
 
 graph = tf.Graph()
 
@@ -66,10 +66,10 @@ with graph.as_default():
                 tensor_list = [model.loss, model.train_op, model.accuracy, model.confusion_accuracy]
                 _loss, _, acc, confusion_acc = sess.run(tensor_list)
                 print("{}/{} [INFO] Epoch {} -\
-                        Accuracy: {:.4f} -\
-                        Loss: {:.4f} -\
-                        Confusion acc: {:.4f}".format(params.BATCH_SIZE * train_step,
-                                                      num_images, epoch, acc, _loss, confusion_acc))
+                Accuracy: {:.4f} -\
+                Loss: {:.4f} -\
+                Confusion acc: {:.4f}".format(params.BATCH_SIZE * train_step,
+                                              num_images, epoch, acc, _loss, confusion_acc))
                 # Tensorboard
                 summ = sess.run(performance_summaries, feed_dict={tf_loss_ph: _loss,
                                                                   tf_accuracy_ph: acc,
@@ -96,5 +96,12 @@ with graph.as_default():
                 val_step += 1
             print(
                 "[INFO VALIDATION] Total step {} -\
-                                val_loss: {:.4f} - val_acc: {:.4f} - val_confusion_acc: {:.4f}".format(
+                val_loss: {:.4f} - val_acc: {:.4f} - val_confusion_acc: {:.4f}".format(
                                                     val_step, val_loss / iter, val_acc / iter, val_confusion / iter))
+
+    # save protobuf graph
+    with gfile.FastGFile(params.SAVER_DIR, 'rb') as f:
+        graph_def = tf.GraphDef()
+        graph_def.ParseFromString(f.read())
+        g_in = tf.import_graph_def(graph_def)
+        print("[INFO] Saved Graph")
