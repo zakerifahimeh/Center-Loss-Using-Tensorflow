@@ -107,7 +107,9 @@ def data_loader(images, labels, num_image):
     image_label_ds = tf.data.Dataset.zip((image_ds, label_ds))
     # Setting a shuffle buffer size as large as the dataset ensures that the data is
     # completely shuffled.
-    train_ds = image_label_ds.cache(filename='./cache.tf-data-train')
+    if not os.path.exists('cache'):
+        os.mkdir('cache')
+    train_ds = image_label_ds.cache(filename='./cache/cache.tf-data')
     train_ds = train_ds.shuffle(buffer_size=num_image)
     train_ds = train_ds.repeat()
     train_ds = train_ds.batch(params.BATCH_SIZE)
