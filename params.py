@@ -21,3 +21,4 @@ RATIO = 0.1
 BATCH_SIZE = 64
 EPOCHS = 10
 LOG_DIR = './log'
+SAVER_DIR = './model_save'

@@ -80,7 +80,7 @@ def train_test_split():
 
     # split dataset
     val_size = int(params.DATA_TRAIN * params.RATIO)
-     # Generate a validation set.
+    # Generate a validation set.
     validation_data = train_data[:val_size, :]
     validation_labels = train_labels[:val_size, :]
     train_data = train_data[val_size:, :]

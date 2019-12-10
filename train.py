@@ -7,6 +7,8 @@ import model_utils
 
 if not os.path.exists(params.LOG_DIR):
     os.mkdir(params.LOG_DIR)
+if not os.path.exists(params.SAVER_DIR):
+    os.mkdir(params.SAVER_DIR)
 
 graph = tf.Graph()
 
@@ -25,9 +27,9 @@ with graph.as_default():
     label = tf.placeholder(tf.int32, [None, params.CLASSES])
 
     # Whenever you need to record the loss, feed the mean loss to this placeholder
-    tf_loss_ph = tf.placeholder(tf.float32,shape=None,name='loss_summary')
-    tf_accuracy_ph = tf.placeholder(tf.float32,shape=None, name='accuracy_summary')
-    tf_confusion_ph = tf.placeholder(tf.float32,shape=None, name='confusion_summary')
+    tf_loss_ph = tf.placeholder(tf.float32, shape=None, name='loss_summary')
+    tf_accuracy_ph = tf.placeholder(tf.float32, shape=None, name='accuracy_summary')
+    tf_confusion_ph = tf.placeholder(tf.float32, shape=None, name='confusion_summary')
 
     # Create a scalar summary object for the loss so it can be displayed
     tf_loss_summary = tf.summary.scalar('loss', tf_loss_ph)
@@ -44,38 +46,41 @@ with graph.as_default():
     # with tf.device("/device:GPU:0"):
     model = architect.CNN(batch_image, batch_label)
 with graph.as_default():
-
     # write graph
     writer = tf.summary.FileWriter(params.LOG_DIR, sess.graph)
     with tf.device("/device:GPU:0"):
         # initialize variable
         sess.run(tf.global_variables_initializer())
         for epoch in range(1, params.EPOCHS + 1):
-            print("[INFO] Epoch {}/{} - Batch Size {} - {} images".format(epoch, params.EPOCHS, params.BATCH_SIZE, num_images))
+            print("[INFO] Epoch {}/{} - Batch Size {} - {} images".format(epoch, params.EPOCHS, params.BATCH_SIZE,
+                                                                          num_images))
             # set up data iterator for training
-            iterator = int(num_images/params.BATCH_SIZE)
+            iterator = int(num_images / params.BATCH_SIZE)
             feed_dict_train = {
-                    input: train_data,
-                    label: train_labels
+                input: train_data,
+                label: train_labels
             }
             sess.run(loader_data.initializer, feed_dict=feed_dict_train)
             train_step = 1
             while train_step <= iterator + 1:
                 tensor_list = [model.loss, model.train_op, model.accuracy, model.confusion_accuracy]
                 _loss, _, acc, confusion_acc = sess.run(tensor_list)
-                print("{}/{} [INFO] Epoch {} - Accuracy: {:.4f} - Loss: {:.4f} - Confusion acc: {:.4f}".format(params.BATCH_SIZE*train_step,
-                                                        num_images, epoch, acc, _loss, confusion_acc))
+                print("{}/{} [INFO] Epoch {} -\
+                        Accuracy: {:.4f} -\
+                        Loss: {:.4f} -\
+                        Confusion acc: {:.4f}".format(params.BATCH_SIZE * train_step,
+                                                      num_images, epoch, acc, _loss, confusion_acc))
                 # Tensorboard
                 summ = sess.run(performance_summaries, feed_dict={tf_loss_ph: _loss,
-                                                                    tf_accuracy_ph: acc,
-                                                                    tf_confusion_ph: confusion_acc})
+                                                                  tf_accuracy_ph: acc,
+                                                                  tf_confusion_ph: confusion_acc})
                 writer.add_summary(summ, train_step)
                 train_step += 1
             # set up for evaluate model
-            iter = int(num_val/params.BATCH_SIZE)
+            iter = int(num_val / params.BATCH_SIZE)
             feed_dict_val = {
-                    input: validation_data,
-                    label: validation_labels
+                input: validation_data,
+                label: validation_labels
             }
             sess.run(loader_data.initializer, feed_dict=feed_dict_val)
             val_step = 1
@@ -89,5 +94,7 @@ with graph.as_default():
                 val_acc += _val_acc
                 val_confusion += _val_confusion_acc
                 val_step += 1
-            print("[INFO VALIDATION] Total step {} - val_loss: {:.4f} - val_acc: {:.4f} - val_confusion_acc: {:.4f}".format(val_step,
-                                                                                    val_loss/iter, val_acc/iter, val_confusion/iter))
+            print(
+                "[INFO VALIDATION] Total step {} -\
+                                val_loss: {:.4f} - val_acc: {:.4f} - val_confusion_acc: {:.4f}".format(
+                                                    val_step, val_loss / iter, val_acc / iter, val_confusion / iter))
