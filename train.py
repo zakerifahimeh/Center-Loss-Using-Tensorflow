@@ -77,7 +77,7 @@ with graph.as_default():
                     input: validation_data,
                     label: validation_labels
             }
-            sess.run(data_loader.initializer, feed_dict=feed_dict_val)
+            sess.run(loader_data.initializer, feed_dict=feed_dict_val)
             val_step = 1
             val_loss = 0
             val_acc = 0
